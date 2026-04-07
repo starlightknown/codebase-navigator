@@ -21,6 +21,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ path, content });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to fetch file content";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const status =
+      error instanceof Error && "status" in error && error.status === 404
+        ? 404
+        : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }
