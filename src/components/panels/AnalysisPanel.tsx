@@ -17,7 +17,10 @@ export function AnalysisPanel() {
     setSelectedFile(filePath);
 
     try {
-      const content = await fetchFile(repoInfo.owner, repoInfo.repo, filePath, repoInfo.branch);
+      const content = await fetchFile(repoInfo.owner, repoInfo.repo, filePath, repoInfo.branch, {
+        localMode: repoInfo.localMode,
+        sessionId: repoInfo.sessionId,
+      });
 
       const relevantFile = analysis.result?.relevantFiles.find(
         (f) => f.path === filePath
@@ -65,9 +68,9 @@ export function AnalysisPanel() {
         </span>
       </div>
       <div className="flex-1 overflow-auto px-4 py-3">
-        <p className="mb-3 text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
-          {explanation}
-        </p>
+        {explanation && (
+          <p className="mb-2 text-xs italic text-gray-500">{explanation}</p>
+        )}
         {relevantFiles.length > 0 && (
           <div className="space-y-0.5">
             {relevantFiles.map((file) => (
@@ -77,6 +80,9 @@ export function AnalysisPanel() {
                 className="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-indigo-600 hover:bg-indigo-50"
               >
                 <span className="truncate">{file.path}</span>
+                {file.relevance && (
+                  <span className="ml-auto shrink-0 pl-3 text-[11px] text-gray-400 truncate max-w-[40%]">{file.relevance}</span>
+                )}
               </button>
             ))}
           </div>

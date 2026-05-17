@@ -70,7 +70,13 @@ export function VisualizationCanvas() {
       setSelectedFile(fullPath);
       try {
         const { fetchFile } = await import("@/lib/fetch-file");
-        const content = await fetchFile(repo.repoInfo.owner, repo.repoInfo.repo, fullPath, repo.repoInfo.branch);
+        const content = await fetchFile(
+          repo.repoInfo.owner,
+          repo.repoInfo.repo,
+          fullPath,
+          repo.repoInfo.branch,
+          { localMode: repo.repoInfo.localMode, sessionId: repo.repoInfo.sessionId }
+        );
         setCodeViewer(fullPath, content);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Failed to load file";
