@@ -37,6 +37,7 @@ interface AppState {
   setSelectedFile: (path: string | null) => void;
   setRepoLoading: (loading: boolean) => void;
   setRepoError: (error: string | null) => void;
+  setSessionId: (id: string | null) => void;
 
   setAnalysisResult: (result: AnalysisResult | null) => void;
   setAnalysisLoading: (loading: boolean) => void;
@@ -102,6 +103,8 @@ export const useAppStore = create<AppState>((set) => ({
     set((state) => ({ repo: { ...state.repo, loading } })),
   setRepoError: (error) =>
     set((state) => ({ repo: { ...state.repo, error } })),
+  setSessionId: (sessionId) =>
+    set((state) => ({ repo: { ...state.repo, repoInfo: state.repo.repoInfo ? { ...state.repo.repoInfo, sessionId: sessionId ?? undefined } : null } })),
 
   setAnalysisResult: (result) =>
     set((state) => ({ analysis: { ...state.analysis, result } })),

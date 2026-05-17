@@ -2,6 +2,10 @@ export interface RepoInfo {
   owner: string;
   repo: string;
   branch: string;
+  /** true when analysing a locally-uploaded folder instead of a GitHub repo */
+  localMode?: boolean;
+  /** session ID for local folders (maps to the server-side local-store) */
+  sessionId?: string;
 }
 
 export interface TreeNode {

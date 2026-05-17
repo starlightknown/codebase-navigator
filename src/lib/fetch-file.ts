@@ -5,8 +5,15 @@ export async function fetchFile(
   owner: string,
   repo: string,
   path: string,
-  ref: string
+  ref: string,
+  options?: { localMode?: boolean; sessionId?: string }
 ): Promise<string> {
+  const { localMode, sessionId } = options ?? {};
+
+  if (localMode && sessionId) {
+    return fetchLocalFile(sessionId, path);
+  }
+
   const key = `${owner}/${repo}/${ref}/${path}`;
   const cached = cache.get(key);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
@@ -34,3 +41,16 @@ export async function fetchFile(
 
   return data.content;
 }
+
+async function fetchLocalFile(sessionId: string, path: string): Promise<string> {
+  const res = await fetch(
+    `/api/local/file?sessionId=${encodeURIComponent(sessionId)}&path=${encodeURIComponent(path)}`
+  );
+  if (!res.ok) {
+    const body = await res.json();
+    throw new Error(body.error || "Failed to fetch local file");
+  }
+  const data = await res.json();
+  return data.content;
+}
+
